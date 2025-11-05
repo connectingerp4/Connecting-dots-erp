@@ -1,60 +1,16 @@
-// components/CoursesComponents/Header.js (Updated DSHeader)
+// components/CoursesComponents/Header.js
 
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-// TypewriterPlaceholderInput for animated placeholder text
-// Synchronized typewriter effect for all placeholders
-import { useRef } from "react";
-function useTypewriterSync(text, maxLen, duration = 3500) {
-  const [displayed, setDisplayed] = useState("");
-  const startTimeRef = useRef(Date.now());
-  useEffect(() => {
-    let frame;
-    function animate() {
-      const now = Date.now();
-      const elapsed = (now - startTimeRef.current) % duration;
-      const progress = elapsed / duration;
-      const chars = Math.floor(progress * maxLen);
-      setDisplayed(text.slice(0, chars));
-      frame = requestAnimationFrame(animate);
-    }
-    animate();
-    return () => cancelAnimationFrame(frame);
-  }, [text, maxLen, duration]);
-  return displayed;
-}
-
-function TypewriterPlaceholderInput({ placeholder, syncLen, ...props }) {
-  // syncLen: the max length among all placeholders
-  const animatedPlaceholder = useTypewriterSync(placeholder, syncLen);
-  return <input {...props} placeholder={animatedPlaceholder} />;
-}
+import { useState, useEffect } from "react";
+import dynamic from 'next/dynamic';
+import { countryCodes } from '@/utils/countryCodes';
 import styles from "@/styles/CoursesComponents/Header.module.css";
-import Btnform from "@/components/HomePage/Btnform"; // Assuming Btnform is a client component
 
-const countryCodes = [
-  { code: "+91", country: "India", minLength: 10, maxLength: 10 },
-  { code: "+1", country: "USA", minLength: 10, maxLength: 10 },
-  { code: "+44", country: "UK", minLength: 10, maxLength: 11 },
-  { code: "+61", country: "Australia", minLength: 9, maxLength: 9 },
-  { code: "+81", country: "Japan", minLength: 10, maxLength: 10 },
-  { code: "+49", country: "Germany", minLength: 10, maxLength: 11 },
-  { code: "+33", country: "France", minLength: 9, maxLength: 9 },
-  { code: "+86", country: "China", minLength: 11, maxLength: 11 },
-  { code: "+7", country: "Russia", minLength: 10, maxLength: 10 },
-  { code: "+39", country: "Italy", minLength: 10, maxLength: 10 },
-  { code: "+55", country: "Brazil", minLength: 10, maxLength: 11 },
-  { code: "+34", country: "Spain", minLength: 9, maxLength: 9 },
-  { code: "+27", country: "South Africa", minLength: 9, maxLength: 9 },
-  { code: "+971", country: "UAE", minLength: 9, maxLength: 9 },
-  { code: "+62", country: "Indonesia", minLength: 10, maxLength: 12 },
-  { code: "+90", country: "Turkey", minLength: 10, maxLength: 10 },
-  { code: "+82", country: "South Korea", minLength: 9, maxLength: 10 },
-  { code: "+60", country: "Malaysia", minLength: 9, maxLength: 10 },
-  { code: "+31", country: "Netherlands", minLength: 9, maxLength: 9 },
-  { code: "+52", country: "Mexico", minLength: 10, maxLength: 10 },
-];
+const Btnform = dynamic(() => import('@/components/HomePage/Btnform'), {
+  ssr: false,
+  loading: () => null
+});
 
 // DSHeader now directly receives the 'data' prop (already processed with city placeholders replaced)
 const DSHeader = ({ data }) => {
@@ -210,7 +166,7 @@ const DSHeader = ({ data }) => {
         muted
         playsInline
         preload="auto"
-        fetchpriority="high"
+        fetchPriority="high"
         importance="high"
         loading="eager"
         decoding="async"
@@ -292,9 +248,7 @@ const DSHeader = ({ data }) => {
 
         <form onSubmit={handleSubmit} className={styles.form}>
           {(() => {
-            // Find the max length among all placeholders for sync
-            const syncLen = Math.max(...(data.form?.inputs?.filter(i => !i.countryCode).map(i => i.placeholder.length) || [0]));
-            return data.form?.inputs?.map((input, index) => {
+                      return data.form?.inputs?.map((input, index) => {
               if (input.countryCode) {
                 const selectedCountry = countryCodes.find(
                   (country) => country.code === formData.countryCode
@@ -318,37 +272,27 @@ const DSHeader = ({ data }) => {
                         ))}
                       </select>
                     </div>
-                    {/* Typewriter effect for phone input placeholder */}
-                    {(() => {
-                      // Find the max length among all placeholders for sync
-                      const allPlaceholders = ["Enter phone number", ...(data.form?.inputs?.filter(i => !i.countryCode).map(i => i.placeholder) || [])];
-                      const syncLen = Math.max(...allPlaceholders.map(p => p.length));
-                      return (
-                        <TypewriterPlaceholderInput
-                          type="tel"
-                          id="contact"
-                          name="contact"
-                          placeholder="Enter phone number"
-                          syncLen={syncLen}
-                          value={formData.contact}
-                          onChange={handleChange}
-                          maxLength={maxLength}
-                          required
-                          disabled={isSubmitting}
-                          className={styles.input}
-                        />
-                      );
-                    })()}
+                    <input
+                      type="tel"
+                      id="contact"
+                      name="contact"
+                      placeholder="Enter phone number"
+                      value={formData.contact}
+                      onChange={handleChange}
+                      maxLength={maxLength}
+                      required
+                      disabled={isSubmitting}
+                      className={styles.input}
+                    />
                   </div>
                 );
               } else {
                 return (
-                  <TypewriterPlaceholderInput
+                  <input
                     key={index}
                     type={input.type}
                     name={input.name}
                     placeholder={input.placeholder}
-                    syncLen={syncLen}
                     className={styles.input}
                     value={formData[input.name] || ""}
                     onChange={handleChange}

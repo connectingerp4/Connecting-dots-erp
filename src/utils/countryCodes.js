@@ -1,0 +1,22 @@
+export const countryCodes = [
+  { code: "+91", country: "India", minLength: 10, maxLength: 10 },
+  { code: "+1", country: "USA", minLength: 10, maxLength: 10 },
+  { code: "+44", country: "UK", minLength: 10, maxLength: 11 },
+  { code: "+61", country: "Australia", minLength: 9, maxLength: 9 },
+  { code: "+81", country: "Japan", minLength: 10, maxLength: 10 },
+  { code: "+49", country: "Germany", minLength: 10, maxLength: 11 },
+  { code: "+33", country: "France", minLength: 9, maxLength: 9 },
+  { code: "+86", country: "China", minLength: 11, maxLength: 11 },
+  { code: "+7", country: "Russia", minLength: 10, maxLength: 10 },
+  { code: "+39", country: "Italy", minLength: 10, maxLength: 10 },
+  { code: "+55", country: "Brazil", minLength: 10, maxLength: 11 },
+  { code: "+34", country: "Spain", minLength: 9, maxLength: 9 },
+  { code: "+27", country: "South Africa", minLength: 9, maxLength: 9 },
+  { code: "+971", country: "UAE", minLength: 9, maxLength: 9 },
+  { code: "+62", country: "Indonesia", minLength: 10, maxLength: 12 },
+  { code: "+90", country: "Turkey", minLength: 10, maxLength: 10 },
+  { code: "+82", country: "South Korea", minLength: 9, maxLength: 10 },
+  { code: "+60", country: "Malaysia", minLength: 9, maxLength: 10 },
+  { code: "+31", country: "Netherlands", minLength: 9, maxLength: 9 },
+  { code: "+52", country: "Mexico", minLength: 10, maxLength: 10 }
+];

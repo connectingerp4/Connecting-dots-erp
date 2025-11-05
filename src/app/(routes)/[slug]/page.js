@@ -3,6 +3,7 @@
 import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
 import ClientCourseSections from "@/components/CoursesComponents/ClientCourseSections";
+import ScrollHandler from '@/components/Common/ScrollHandlerClient';
 import {
   generateDynamicMetadata,
   generateDynamicJsonLd,
@@ -255,38 +256,6 @@ const CourseCityPage = async ({ params }) => {
     return "";
   }
 
-  // Scroll handling script for hash navigation
-  const scrollScript = `
-    <script>
-      (function() {
-        function scrollToHash() {
-          const hash = window.location.hash.replace('#', '');
-          if (hash) {
-            setTimeout(() => {
-              const element = document.getElementById(hash);
-              if (element) {
-                element.scrollIntoView({ 
-                  behavior: 'smooth', 
-                  block: 'start',
-                  inline: 'nearest'
-                });
-              }
-            }, 500);
-          }
-        }
-        
-        // Handle initial load
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', scrollToHash);
-        } else {
-          scrollToHash();
-        }
-        
-        // Handle hash changes
-        window.addEventListener('hashchange', scrollToHash);
-      })();
-    </script>
-  `;
 
   // Render Digital Marketing specific layout
   if (courseSlug === "digital-marketing" && isMultiSectionCourse) {
@@ -320,8 +289,8 @@ const CourseCityPage = async ({ params }) => {
           />
         )}
 
-        {/* Inject scroll handling script */}
-        <div dangerouslySetInnerHTML={{ __html: scrollScript }} />
+        {/* Client-side scroll handler for hash navigation */}
+        <ScrollHandler />
 
         {/* Render core dynamic content for the page body */}
         <div dangerouslySetInnerHTML={{ __html: dynamicBodyContent }} />

@@ -265,10 +265,10 @@ const OrbitalTrail = () => {
           </div>
           
           {/* Feature list */}
-          <div className={`keyNotes ${isMobile ? 'grid grid-cols-2 gap-4' : 'lg:ml-8 flex flex-col justify-center mt-8 space-y-6'} w-full lg:w-auto px-2 lg:px-0`}>
+          <div className={`keyNotes ${isMobile ? 'grid grid-cols-2 gap-6' : 'lg:ml-8 flex flex-col justify-center mt-8 space-y-6'} w-full lg:w-auto px-2 lg:px-0`}>
             {hexagonData.map((feature, index) => (
               <div 
-                className={`note ${isMobile ? 'flex flex-col items-center text-center' : 'flex items-center space-x-4'}`} 
+                className={`note ${isMobile ? 'flex flex-col items-center px-2' : 'flex items-center space-x-4'}`} 
                 key={index}
               >
                 {isMobile ? (
@@ -283,9 +283,9 @@ const OrbitalTrail = () => {
                         style={{ filter: 'brightness(0) invert(1)' }}
                       />
                     </div>
-                    <div className="text-white">
+                    <div className="text-white w-full">
                       <div className='text-sm font-semibold mb-1'>{feature.title}</div>
-                      <div className='text-xs leading-relaxed'>{feature.desc}</div>
+                      <div className='text-xs leading-relaxed text-justify'>{feature.desc}</div>
                     </div>
                   </>
                 ) : (
