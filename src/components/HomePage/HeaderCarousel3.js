@@ -205,9 +205,68 @@ const QuizCompo = ({ onReady }) => {
 
 
         {/* Mobile Layout - OPTIMIZED */}
-        <div className="block lg:hidden space-y-3 pt-2 sm:pt-4">
+        <div className="block lg:hidden space-y-3 pt-2 sm:pt-4 relative">
+          {/* SVG Background Elements */}
+          <svg
+            className="sm:hidden absolute top-0 right-1 w-full -z-10"
+            viewBox="0 0 1440 100"
+            preserveAspectRatio="none"
+            style={{ height: '87%', width: '250%', transform: 'rotate(-45deg)', transformOrigin: 'top left' }}
+          >
+            <path
+              d="M0,0 L1440,0 L1440,100 L0,100 Z"
+              fill="#182E4A"
+            />
+          </svg>
+
+          <svg
+            className="sm:hidden absolute top-50 right-1 w-full -z-10"
+            viewBox="0 0 1440 100"
+            preserveAspectRatio="none"
+            style={{ height: '0.5%', width: '142%', transform: 'rotate(-45deg)', transformOrigin: 'top left' }}
+          >
+            <path
+              d="M0,0 L1440,0 L1440,100 L0,100 Z"
+              fill="#182E4A"
+            />
+          </svg>
+
+          <svg
+            className="sm:hidden absolute top-50 right-40 -z-10"
+            viewBox="0 0 1440 100"
+            preserveAspectRatio="none"
+            style={{
+              height: '90%',
+              width: '30%',
+              transform: 'rotate(45deg)',
+              transformOrigin: 'bottom right',
+            }}
+          >
+            <path
+              d="M0,0 L1440,0 L1440,100 L0,100 Z"
+              fill="#182E4A"
+            />
+          </svg>
+
+          <svg
+            className="sm:hidden absolute top-50 right-40 -z-10"
+            viewBox="0 0 1440 100"
+            preserveAspectRatio="none"
+            style={{
+              height: '58%',
+              width: '0.5%',
+              transform: 'rotate(45deg)',
+              transformOrigin: 'bottom right',
+            }}
+          >
+            <path
+              d="M0,0 L1440,0 L1440,100 L0,100 Z"
+              fill="#182E4A"
+            />
+          </svg>
+
           {/* Header - Compact */}
-          <div className="text-center bg-gradient-to-r from-blue-50 to-purple-50 p-2.5 sm:p-3 rounded-lg">
+          <div className="text-center bg-gradient-to-r from-blue-100 to-purple-100 p-2.5 sm:p-2 rounded-lg relative z-10">
             <div className="flex items-center justify-center gap-2">
               <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 animate-pulse" />
               <h2 className="text-base sm:text-lg font-bold bg-gradient-to-r from-blue-800 via-blue-600 to-blue-400 bg-clip-text text-transparent">

@@ -339,6 +339,7 @@ export default function OfferLetter() {
           </div>
         </div>
       </div>
+      
 
       {/* Inline styles for sequential animation and hover behaviour */}
       <style>{`
@@ -782,6 +783,9 @@ export default function OfferLetter() {
 
         /* Disable all animations and transitions on mobile to provide a static experience */
         @media (max-width: 640px) {
+          
+         }
+        @media (max-width: 640px) { 
           /* Hide the sinusoidal wave entirely on mobile */
           .wave { display: none !important; }
           .wave path { display: none !important; }
@@ -799,50 +803,34 @@ export default function OfferLetter() {
           .label-multiline, .label-line-first, .label-line-second { transition: none !important; }
         }
 
-        /* Mobile-only: make adjacent left/right semicircles visually join in a smooth sinusoidal column */
-        @media (max-width: 640px) {
-          /* remove large gaps so rings can overlap slightly and appear connected */
-          .flex.items-center.gap-6.relative.z-10 { gap: 0.5rem !important; }
-
-          /* overlap rows slightly so semicircles meet; don't apply to first to avoid clipping */
-          .flex.items-center.gap-6.relative.z-10 > .icon-item:not(:first-child) { margin-top: -22px !important; }
-          .flex.items-center.gap-6.relative.z-10 > .icon-item { padding: 8px 0 !important; }
-
-          /* Exception: keep normal gap between Corporate Training (2) and Real-Time Projects (3) so those two don't overlap */
-          .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(3) { margin-top: 12px !important; transform: none !important; }
-
-          /* Prevent overlap between Interview Preparation (4) and Experience Alteration (5) */
-          /* Make the 5th item start lower and cancel the small odd/even vertical nudge for both so spacing stays regular */
-          .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(5) { margin-top: 14px !important; transform: none !important; }
-          .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(4) { transform: none !important; }
-
-          /* give the semicircle strokes a little extra thickness and round linecaps for a seamless join */
-          .flex.items-center.gap-6.relative.z-10 > .icon-item svg path.semi-left,
-          .flex.items-center.gap-6.relative.z-10 > .icon-item svg path.semi-right {
-            stroke-width: 12 !important;
-            stroke-linecap: round !important;
-          }
-
-          /* Nudge odd/even svgs horizontally so the colored half of one meets the colored half of its neighbor
-             Respect existing absolute centering transform by appending an additional translateX */
-          .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(odd) > svg,
-          .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(odd) > svg.absolute,
-          .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(odd) svg.absolute.inset-0 {
-            transform: translate(-50%, -50%) translateX(10px) !important;
-          }
-          .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(even) > svg,
-          .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(even) > svg.absolute,
-          .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(even) svg.absolute.inset-0 {
-            transform: translate(-50%, -50%) translateX(-10px) !important;
-          }
-
-          /* Slightly lift odd items and lower even items to smooth the vertical flow where needed */
-          .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(odd) { transform: translateY(-6px) !important; }
-          .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(even) { transform: translateY(6px) !important; }
-
-          /* Ensure inner white circle remains centered above the svg despite nudges */
-          .flex.items-center.gap-6.relative.z-10 > .icon-item > .absolute { left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; }
-        }
+       /* MOBILE ONLY: Straight vertical line override - DO NOT affect desktop */
+@media (max-width: 640px) {
+  /* Force all rings into perfect straight vertical alignment */
+  .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(odd) > svg,
+  .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(odd) > svg.absolute,
+  .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(odd) svg.absolute.inset-0,
+  .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(even) > svg,
+  .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(even) > svg.absolute,
+  .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(even) svg.absolute.inset-0 {
+    transform: translate(-50%, -50%) !important;
+  }
+  
+  /* Remove vertical offsets */
+  .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(odd),
+  .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(even) {
+    transform: translateY(0) !important;
+  }
+  
+  /* Remove overlapping margins */
+  .flex.items-center.gap-6.relative.z-10 > .icon-item:not(:first-child) {
+    margin-top: 0 !important;
+  }
+  
+  /* Consistent gap */
+  .flex.items-center.gap-6.relative.z-10 {
+    gap: 1.5rem !important;
+  }
+}
 
         /* Inline heading styles for the section title */
         .containerCH {
@@ -961,6 +949,7 @@ export default function OfferLetter() {
             margin: 0 auto !important;
             pointer-events: none !important;
           }
+            
 
           /* Ensure the inner flex that had an inline scale is reset and centered */
           .chevron-content-wrapper .relative.flex {
@@ -996,6 +985,7 @@ export default function OfferLetter() {
             z-index: 75 !important; /* keep labels above rings */
             pointer-events: none !important;
           }
+            
           /* Odd items (1,3,5...) — place label to the right of the centered ring */
           .flex.items-center.gap-6.relative.z-10 > .icon-item:nth-child(odd) .label {
             left: calc(50% + 60px) !important; /* keep close to ring */
@@ -1102,6 +1092,7 @@ export default function OfferLetter() {
             overflow-x: hidden !important;
             min-height: 620px !important; /* slightly increased height */
           }
+            
         }
       `}</style>
     </div>

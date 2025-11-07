@@ -8,7 +8,7 @@ const premiumClients = [
   "Accenture.avif", "wipro.avif", "infosys.avif", "google.avif",
   "microsoft.avif", "cognizant.avif", "tcs.avif", "amdocs.avif",
   "ibm.avif", "paytm.avif", "capgemini.avif", "swiggy.avif",
-  "hdfc.avif", "God.avif", "bajaj.avif", "bharatpe.avif", "pizza-hut.avif",
+  "hdfc.avif", "God.avif", "Bajaj.avif", "bharatpe.avif", "pizza-hut.avif",
 ];
 
 const enterpriseClients = [

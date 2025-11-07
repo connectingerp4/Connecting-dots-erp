@@ -18,31 +18,91 @@ const CareerHeroSlide = ({ onOpenForm }) => {
       
       {/* Wave Background */}
       <div className="absolute inset-0 sm:bg-[#182E4A]">
-        {/* Top white wave */}
-<svg
-  className="hidden sm:block absolute bottom-50 left-0 w-full"
-  viewBox="0 0 1440 800"
+        {/* Mobile - Straight lines */}
+        <svg
+          className="sm:hidden absolute top-0 right-1 w-full"
+          viewBox="0 0 1440 100"
+          preserveAspectRatio="none"
+          style={{ height: '87%', width: '250%', transform: 'rotate(-45deg)', transformOrigin: 'top left'}}
+        >
+          <path
+            d="M0,0 L1440,0 L1440,100 L0,100 Z"
+            fill="#182E4A"
+          />
+        </svg>
+
+        <svg
+          className="sm:hidden absolute top-50 right-1 w-full"
+          viewBox="0 0 1440 100"
+          preserveAspectRatio="none"
+          style={{ height: '0.5%', width: '135%', transform: 'rotate(-45deg)', transformOrigin: 'top left'}}
+        >
+          <path
+            d="M0,0 L1440,0 L1440,100 L0,100 Z"
+            fill="#182E4A"
+          />
+        </svg>
+
+        <svg
+  className="sm:hidden absolute top-50 right-40"
+  viewBox="0 0 1440 100"
   preserveAspectRatio="none"
-  style={{ height: '58%', rotate: '180deg' }}
+  style={{
+    height: '80%',
+    width: '30%',
+    transform: 'rotate(45deg)',
+    transformOrigin: 'bottom right',
+  }}
 >
   <path
-    d="M0,900 L300,900 Q500,750 700,550 Q900,400 1100,480 Q1300,560 1440,450 L1440,900 Z"
-    fill="#ffffff"
+    d="M0,0 L1440,0 L1440,100 L0,100 Z"
+    fill="#182E4A"
   />
 </svg>
 
-{/* Bottom cream wave */}
-<svg
-  className="hidden sm:block absolute bottom-0 left-0 w-full"
-  viewBox="0 0 1440 800"
+ <svg
+  className="sm:hidden absolute top-50 right-40"
+  viewBox="0 0 1440 100"
   preserveAspectRatio="none"
-  style={{ height: '58%' }}
+  style={{
+    height: '50%',
+    width: '0.5%',
+    transform: 'rotate(45deg)',
+    transformOrigin: 'bottom right',
+  }}
 >
   <path
-    d="M0,900 L300,900 Q500,750 700,550 Q900,400 1100,480 Q1300,560 1440,450 L1440,900 Z"
-    fill="#ffffff"
+    d="M0,0 L1440,0 L1440,100 L0,100 Z"
+    fill="#182E4A"
   />
 </svg>
+
+
+        {/* Desktop - Top wave (hidden on mobile) */}
+        <svg
+          className="hidden sm:block absolute bottom-50 left-0 w-full"
+          viewBox="0 0 1440 800"
+          preserveAspectRatio="none"
+          style={{ height: '58%', rotate: '180deg' }}
+        >
+          <path
+            d="M0,900 L300,900 Q500,750 700,550 Q900,400 1100,480 Q1300,560 1440,450 L1440,900 Z"
+            fill="#ffffff"
+          />
+        </svg>
+
+        {/* Desktop - Bottom wave (hidden on mobile) */}
+        <svg
+          className="hidden sm:block absolute bottom-0 left-0 w-full"
+          viewBox="0 0 1440 800"
+          preserveAspectRatio="none"
+          style={{ height: '58%' }}
+        >
+          <path
+            d="M0,900 L300,900 Q500,750 700,550 Q900,400 1100,480 Q1300,560 1440,450 L1440,900 Z"
+            fill="#ffffff"
+          />
+        </svg>
 
       </div>
 
@@ -55,10 +115,10 @@ const CareerHeroSlide = ({ onOpenForm }) => {
             <div className={`space-y-3 sm:space-y-4 md:space-y-5 transition-all duration-1000 ease-out ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
               
               {/* ✅ FIXED: Responsive font sizes */}
-              <h2 className="text-4xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-gray-900 sm:text-white mt-25 pt-20">
+              <h2 className="text-4xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-gray-900 sm:text-white mt-35 pt-20">
                 <span className="block sm:inline">
-                  Secure your{" "}
-                  <span className="text-blue-800 sm:text-[#93C5FD] relative inline-block">
+                  <span className="text-blue-600 sm:text-white relative inline-block">S</span>ecure your{" "}
+                  <span className="text-blue-600 sm:text-[#93C5FD] relative inline-block">
                     Dream Career 
                   </span>
                 </span>{" "}

@@ -1,21 +1,24 @@
 "use client";
 
+import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
-// Lazy client components
+// === Above the fold (SSR enabled for SEO-critical content) ===
 const DSHeader = dynamic(() => import("./Header"));
 const Why = dynamic(() => import("./Why"));
-const Counselor = dynamic(() => import("./Councelor"));
-const TrustUs = dynamic(() => import("./Trustus"));
-const Certificate = dynamic(() => import("../HomePage/Certificate"));
-const Program = dynamic(() => import("./ProgramHighlights"));
-const Description = dynamic(() => import("./Description"));
-const FAQ = dynamic(() => import("./FAQ"));
-const CoursesRelated = dynamic(() => import("./RelatedCourses"));
-const SapModComponent = dynamic(() => import("./sapmod"));
-const Modules = dynamic(() => import("./Modules"));
-const Curriculum = dynamic(() => import("./Curriculam"));
-const HrCard = dynamic(() => import("./HRCard"));
+const SapModComponent = dynamic(() => import("./sapmod"), { ssr: false });
+const Curriculum = dynamic(() => import("./Curriculam"), { ssr: false });
+const Modules = dynamic(() => import("./Modules"), { ssr: false });
+
+// === Below the fold (hydrated after initial paint) ===
+const Counselor = dynamic(() => import("./Councelor"), { ssr: false });
+const TrustUs = dynamic(() => import("./Trustus"), { ssr: false });
+const Certificate = dynamic(() => import("../HomePage/Certificate"), { ssr: false });
+const Program = dynamic(() => import("./ProgramHighlights"), { ssr: false });
+const Description = dynamic(() => import("./Description"), { ssr: false });
+const FAQ = dynamic(() => import("./FAQ"), { ssr: false });
+const CoursesRelated = dynamic(() => import("./RelatedCourses"), { ssr: false });
+const HrCard = dynamic(() => import("./HRCard"), { ssr: false });
 
 export default function ClientCourseSections(props) {
   const {
@@ -35,63 +38,95 @@ export default function ClientCourseSections(props) {
     shouldUseLegacyModules,
   } = props;
 
+  // === Digital Marketing layout (multi-section courses) ===
   if (layoutType === "digital") {
     return (
       <>
+        {/* --- Above-the-fold content --- */}
         <DSHeader data={headerData} />
         <Why data={whyData} />
         {sapModData && <SapModComponent data={sapModData} />}
 
-        {shouldUseNewCurriculum && <Curriculum data={course} />} 
-        {shouldUseLegacyModules && <Modules data={modulesData} />}
+        {shouldUseNewCurriculum && (
+          <Suspense fallback={null}>
+            <Curriculum data={course} />
+          </Suspense>
+        )}
 
-        <Counselor />
+        {shouldUseLegacyModules && (
+          <Suspense fallback={null}>
+            <Modules data={modulesData} />
+          </Suspense>
+        )}
 
-        {/* Main description section */}
-        <Description data={descriptionContentData.main} />
+        {/* --- Below-the-fold (lazy-hydrated) --- */}
+        <Suspense fallback={null}>
+          <Counselor />
+        </Suspense>
 
-        {/* PPC Section with scroll anchor */}
+        <Suspense fallback={null}>
+          <Description data={descriptionContentData.main} />
+        </Suspense>
+
         <div id="pay-per-click" style={{ scrollMarginTop: "80px" }}>
-          {descriptionContentData.ppc && (
-            <Description data={descriptionContentData.ppc} sectionIndex={0} />
-          )}
+          <Suspense fallback={null}>
+            {descriptionContentData.ppc && (
+              <Description data={descriptionContentData.ppc} sectionIndex={0} />
+            )}
+          </Suspense>
         </div>
 
-        <TrustUs />
+        <Suspense fallback={null}>
+          <TrustUs />
+        </Suspense>
 
-        {/* SEO Section with scroll anchor */}
         <div id="search-engine-optimization" style={{ scrollMarginTop: "80px" }}>
-          {descriptionContentData.seo && (
-            <Description data={descriptionContentData.seo} sectionIndex={1} />
-          )}
+          <Suspense fallback={null}>
+            {descriptionContentData.seo && (
+              <Description data={descriptionContentData.seo} sectionIndex={1} />
+            )}
+          </Suspense>
         </div>
 
-        <Certificate data={certificateData} />
-        <Program />
+        <Suspense fallback={null}>
+          <Certificate data={certificateData} />
+        </Suspense>
 
-        {/* SMM Section with scroll anchor */}
+        <Suspense fallback={null}>
+          <Program />
+        </Suspense>
+
         <div id="social-media-marketing" style={{ scrollMarginTop: "80px" }}>
-          {descriptionContentData.smm && (
-            <Description data={descriptionContentData.smm} sectionIndex={0} />
-          )}
+          <Suspense fallback={null}>
+            {descriptionContentData.smm && (
+              <Description data={descriptionContentData.smm} sectionIndex={0} />
+            )}
+          </Suspense>
         </div>
 
-        {/* Analytics Section with scroll anchor */}
         <div id="advance-analytics" style={{ scrollMarginTop: "80px" }}>
-          {descriptionContentData.analytics && (
-            <Description data={descriptionContentData.analytics} sectionIndex={1} />
-          )}
+          <Suspense fallback={null}>
+            {descriptionContentData.analytics && (
+              <Description data={descriptionContentData.analytics} sectionIndex={1} />
+            )}
+          </Suspense>
         </div>
 
-        <FAQ data={faqData} />
-        <CoursesRelated data={relatedCoursesData} currentCityName={currentCityName} />
+        <Suspense fallback={null}>
+          <FAQ data={faqData} />
+        </Suspense>
+
+        <Suspense fallback={null}>
+          <CoursesRelated data={relatedCoursesData} currentCityName={currentCityName} />
+        </Suspense>
       </>
     );
   }
 
-  // default layout
+  // === Default layout (e.g. SAP, HR, Data Analytics) ===
   return (
     <>
+      {/* --- Above-the-fold --- */}
       <DSHeader data={headerData} />
       <Why data={whyData} />
 
@@ -99,28 +134,57 @@ export default function ClientCourseSections(props) {
 
       {shouldUseNewCurriculum && (
         <div id="curriculum" style={{ scrollMarginTop: "80px" }}>
-          <Curriculum data={course} />
+          <Suspense fallback={null}>
+            <Curriculum data={course} />
+          </Suspense>
         </div>
       )}
+
       {shouldUseLegacyModules && (
         <div id="modules" style={{ scrollMarginTop: "80px" }}>
-          <Modules data={modulesData} />
+          <Suspense fallback={null}>
+            <Modules data={modulesData} />
+          </Suspense>
         </div>
       )}
 
-      <Counselor />
-      <TrustUs />
-      <Program />
-      <Certificate data={certificateData} />
+      {/* --- Below-the-fold --- */}
+      <Suspense fallback={null}>
+        <Counselor />
+      </Suspense>
 
-      {/* Single description section for non-multi-section courses */}
-      <Description data={descriptionContentData} />
+      <Suspense fallback={null}>
+        <TrustUs />
+      </Suspense>
 
-      <FAQ data={faqData} />
-      {courseCategory === "hr" && <HrCard />}
-      <CoursesRelated data={relatedCoursesData} currentCityName={currentCityName} />
+      <Suspense fallback={null}>
+        <Program />
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <Certificate data={certificateData} />
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <Description data={descriptionContentData} />
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <FAQ data={faqData} />
+      </Suspense>
+
+      {courseCategory === "hr" && (
+        <Suspense fallback={null}>
+          <HrCard />
+        </Suspense>
+      )}
+
+      <Suspense fallback={null}>
+        <CoursesRelated
+          data={relatedCoursesData}
+          currentCityName={currentCityName}
+        />
+      </Suspense>
     </>
   );
 }
-
-

@@ -388,13 +388,17 @@ const CareerMentorsComponent = () => {
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden flex">
+
       <div
   className="
     absolute inset-0 
     bg-white 
     sm:bg-gradient-to-r sm:from-[#182E4A] sm:via-[#182E4A] sm:to-[#182E4A]
   "
->  <svg
+>
+  
+  
+    <svg
           className="absolute bottom-50 left-0 w-full"
           viewBox="0 0 1440 800"
           preserveAspectRatio="none"
@@ -423,8 +427,9 @@ const CareerMentorsComponent = () => {
         
         {/* Mobile Layout */}
         {isMobile && (
-          <div className="space-y-2 sm:space-y-4 md:space-y-6 pt-3 pb-12 overflow-visible min-h-[600px]">
-            <div className="text-center px-2 mt-8">
+          
+          <div className="space-y-2 sm:space-y-4 md:space-y-6 pb-12 overflow-visible min-h-[600px]">
+            <div className="text-center px-5 mt-12 ">
               <div className="relative inline-block">
                 <h2 className="text-2xl sm:text-3xl font-black leading-tight text-gray-800">
                   <span className="text-black sm:text-white">Professional </span>
@@ -442,15 +447,78 @@ const CareerMentorsComponent = () => {
               </p>
             </div>
 
-            <div className="flex justify-center mt-[-30px]">
-              <div className="w-full max-w-lg">
+            <div className="w-full max-w-lg">
                 <AnimatedBeamDemo />
               </div>
-            </div>
 
-            <div className="overflow-visible">
-              {PlacementBadge}
+            <div className="flex justify-center mt-[-30px]">
+              
+              
+
+              {/* Mobile - Straight lines */}
+              <svg
+                className="sm:hidden absolute top-0 right-1 w-full"
+                viewBox="0 0 1440 100"
+                preserveAspectRatio="none"
+                style={{ height: '87%', width: '250%', transform: 'rotate(-45deg)', transformOrigin: 'top left' }}
+              >
+                <path
+                  d="M0,0 L1440,0 L1440,100 L0,100 Z"
+                  fill="#182E4A"
+                />
+              </svg>
+
+              <svg
+                className="sm:hidden absolute top-50 right-1 w-full"
+                viewBox="0 0 1440 100"
+                preserveAspectRatio="none"
+                style={{ height: '0.5%', width: '135%', transform: 'rotate(-45deg)', transformOrigin: 'top left' }}
+              >
+                <path
+                  d="M0,0 L1440,0 L1440,100 L0,100 Z"
+                  fill="#182E4A"
+                />
+              </svg>
+
+              <svg
+                className="sm:hidden absolute top-50 right-40"
+                viewBox="0 0 1440 100"
+                preserveAspectRatio="none"
+                style={{
+                  height: '80%',
+                  width: '30%',
+                  transform: 'rotate(45deg)',
+                  transformOrigin: 'bottom right',
+                }}
+              >
+                <path
+                  d="M0,0 L1440,0 L1440,100 L0,100 Z"
+                  fill="#182E4A"
+                />
+              </svg>
+
+              <svg
+                className="sm:hidden absolute top-50 right-40"
+                viewBox="0 0 1440 100"
+                preserveAspectRatio="none"
+                style={{
+                  height: '50%',
+                  width: '0.5%',
+                  transform: 'rotate(45deg)',
+                  transformOrigin: 'bottom right',
+                }}
+              >
+                <path
+                  d="M0,0 L1440,0 L1440,100 L0,100 Z"
+                  fill="#182E4A"
+                />
+              </svg>
+
+              
             </div>
+            <div className="overflow-visible">
+                {PlacementBadge}
+              </div>
           </div>
         )}
 
