@@ -45,7 +45,7 @@ export const metadata = {
     google: "KRKFsO9AAW2a8qImif8Wj4uzzjmWGA0R6o7IZFJcmPo",
     other: {
       "ahrefs-site-verification":
-        "2e4a5544d39fb390cae326f00bcaca1570f754a57923aa22bdf08313fe9404ed",
+        "bd85164586efc81f600cca95d7265fdd022e26443eb85ab8a428bcf17b6b4c3a",
     },
   },
   manifest: "/site.webmanifest",
