@@ -1,6 +1,7 @@
-// lib/dynamicSEO.js - Fixed for JavaScript Errors
+// lib/dynamicSEO.js - Fixed for JavaScript Errors & metaSEO integration
 
 import { coursesData, citiesData } from "./masterData.js";
+import { getMeta } from "./metaSEO.js"; // NEW: centralized meta overrides
 
 // Helper to safely truncate string to word boundary
 function truncateString(str, maxLength) {
@@ -17,7 +18,7 @@ function truncateString(str, maxLength) {
 function getOptimizedCityName(cityName) {
   const optimizations = {
     "Pimpri-Chinchwad": "Pimpri",
-    "Visakhapatnam": "Vizag", 
+    "Visakhapatnam": "Vizag",
     "Koregaon-Park": "Koregaon",
     "Shivaji-Nagar": "Shivaji Ngr",
     "Pimple-Saudagar": "Pimple",
@@ -47,32 +48,24 @@ function getOptimalTitle(course, cityName, courseTitle) {
     const processedTitle = course.metaTitle.replace(/{city}/g, cityName);
     return truncateString(processedTitle, 60);
   }
-  
-  const currentYear = new Date().getFullYear();
-  const cityLength = cityName.length;
-  const courseTitleLength = courseTitle.length;
-  
-  // Strategy 1: Try standard template
+
   const standardTemplate = `${courseTitle} Course in ${cityName} | Training`;
   if (standardTemplate.length <= 60) {
     return standardTemplate;
   }
-  
-  // Strategy 2: Optimize city name
+
   const optimizedCity = getOptimizedCityName(cityName);
   const cityOptimizedTemplate = `${courseTitle} Course in ${optimizedCity} | Training`;
   if (cityOptimizedTemplate.length <= 60) {
     return cityOptimizedTemplate;
   }
-  
-  // Strategy 3: Optimize both
+
   const optimizedCourse = getOptimizedCourseTitle(courseTitle);
   const bothOptimizedTemplate = `${optimizedCourse} in ${optimizedCity} | Training`;
   if (bothOptimizedTemplate.length <= 60) {
     return bothOptimizedTemplate;
   }
-  
-  // Fallback: Truncate
+
   return truncateString(`${courseTitle} in ${cityName} | Training`, 60);
 }
 
@@ -85,24 +78,22 @@ function getOptimalDescription(course, cityName, courseTitle) {
     }
     return truncateString(processedDescription, 160);
   }
-  
-  // Template targeting 150-160 chars
+
   const template = `Master ${courseTitle} in ${cityName}. Expert-led training, certification, real-time projects & 100% placement support. Launch your career now!`;
-  
+
   if (template.length >= 150 && template.length <= 160) {
     return template;
   }
-  
+
   if (template.length > 160) {
     return truncateString(template, 160);
   }
-  
-  // If too short, expand slightly
+
   const expandedTemplate = template.replace(
     "Launch your career now!",
     "Start your successful career journey now!"
   );
-  
+
   return expandedTemplate.length <= 160 ? expandedTemplate : truncateString(expandedTemplate, 160);
 }
 
@@ -121,9 +112,12 @@ export function generateDynamicMetadata(courseSlug, citySlug) {
   const cityName = city.name;
   const hasOffice = city.hasOffice;
 
-  // Generate optimized title and description
-  const finalTitle = getOptimalTitle(course, cityName, courseTitle);
-  const finalDescription = getOptimalDescription(course, cityName, courseTitle);
+  // NEW: pull meta overrides / templates from metaSEO.js
+  const metaOverride = getMeta(courseSlug, citySlug, course, city) || {};
+  // Use override values if present, otherwise fallback to smart generation
+  const finalTitle = metaOverride.metaTitle || getOptimalTitle(course, cityName, courseTitle);
+  const finalDescription =
+    metaOverride.metaDescription || getOptimalDescription(course, cityName, courseTitle);
 
   // Generate strategic keywords
   const keywords = [
@@ -134,18 +128,18 @@ export function generateDynamicMetadata(courseSlug, citySlug) {
     `${courseTitle} Classes in ${cityName}`,
     `${courseTitle} Jobs in ${cityName}`,
     `Connecting Dots ERP ${cityName}`,
-    ...course.jobRoles.slice(0, 2).map((role) => `${role} ${cityName}`),
+    ...((course.jobRoles && course.jobRoles.slice(0, 2)) || []).map((role) => `${role} ${cityName}`),
     ...(course.modules ? course.modules.slice(0, 2).map((module) => `${module} training ${cityName}`) : []),
   ]
     .filter(Boolean)
     .join(", ");
-    
+
   const optimizedKeywords = truncateString(keywords, 400);
 
-  // Generate URLs
-  const pageUrl = `https://connectingdotserp.com/${course.slug}-course-in-${citySlug}`;
-  const ogImageUrl = `https://connectingdotserp.com/images/og-${course.slug}-course-${citySlug}.jpg`;
-  const twitterImageUrl = `https://connectingdotserp.com/images/twitter-${course.slug}-course-${citySlug}.jpg`;
+  // Generate URLs - use the incoming slugs consistently
+  const pageUrl = `https://connectingdotserp.com/${courseSlug}-course-in-${citySlug}`;
+  const ogImageUrl = `https://connectingdotserp.com/images/og-${courseSlug}-course-${citySlug}.jpg`;
+  const twitterImageUrl = `https://connectingdotserp.com/images/twitter-${courseSlug}-course-${citySlug}.jpg`;
 
   // Open Graph metadata
   const openGraph = {
@@ -189,8 +183,11 @@ export function generateDynamicMetadata(courseSlug, citySlug) {
         themeColor: "#1a365d",
         msApplicationNavButtonColor: "#1a365d",
         appleStatusBarStyle: "black-translucent",
-        "mobile-web-app-capable": "yes", // ✅ Fixed: Use correct meta tag
-        appleMobileTitle: truncateString(`${getOptimizedCourseTitle(courseTitle)} - ${getOptimizedCityName(cityName)}`, 45),
+        "mobile-web-app-capable": "yes",
+        appleMobileTitle: truncateString(
+          `${getOptimizedCourseTitle(courseTitle)} - ${getOptimizedCityName(cityName)}`,
+          45
+        ),
       }
     : {};
 
@@ -223,17 +220,13 @@ export function generateDynamicMetadata(courseSlug, citySlug) {
       icon: "/favicon.ico",
       appleTouchIcon: "/apple-touch-icon.png",
     },
-    manifest: "/site.webmanifest", // ✅ Fixed: Ensure manifest is included
+    manifest: "/site.webmanifest",
     preconnect: [
       "https://fonts.googleapis.com",
       "https://fonts.gstatic.com",
       "https://www.google-analytics.com",
     ],
-    dnsPrefetch: [
-      "//www.google.com",
-      "//www.googleapis.com",
-      "//fonts.googleapis.com",
-    ],
+    dnsPrefetch: ["//www.google.com", "//www.googleapis.com", "//fonts.googleapis.com"],
     facebook: {
       appId: "your-facebook-app-id",
     },
@@ -243,7 +236,7 @@ export function generateDynamicMetadata(courseSlug, citySlug) {
   };
 }
 
-// Keep your existing generateDynamicJsonLd function unchanged
+// Keep your existing generateDynamicJsonLd function but prefer metaDescription when available
 export function generateDynamicJsonLd(courseSlug, citySlug) {
   const course = coursesData[courseSlug];
   const city = citiesData[citySlug];
@@ -256,7 +249,7 @@ export function generateDynamicJsonLd(courseSlug, citySlug) {
   }
 
   const baseUrl = "https://connectingdotserp.com";
-  const pageUrl = `${baseUrl}/${course.slug}-course-in-${citySlug}`;
+  const pageUrl = `${baseUrl}/${courseSlug}-course-in-${citySlug}`;
   const currentDate = new Date().toISOString();
   const futureDate = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
     .toISOString()
@@ -265,7 +258,10 @@ export function generateDynamicJsonLd(courseSlug, citySlug) {
   const cityName = city.name;
   const hasOffice = city.hasOffice;
 
-  const processedDescription = course.description.replace(/{city}/g, cityName);
+  // NEW: prefer metaDescription from overrides if present (keeps JSON-LD consistent with meta tags)
+  const metaOverride = getMeta(courseSlug, citySlug, course, city) || {};
+  const processedDescription = (metaOverride.metaDescription && metaOverride.metaDescription.replace(/{city}/g, cityName)) ||
+    (course.description ? course.description.replace(/{city}/g, cityName) : "");
 
   const jsonLd = [
     // Organization Schema
@@ -276,8 +272,7 @@ export function generateDynamicJsonLd(courseSlug, citySlug) {
       name: "Connecting Dots ERP",
       description: "Best Training Provider | Placement Giants",
       url: baseUrl,
-      telephone:
-        hasOffice && city.office?.phone ? city.office.phone : "+919004002941",
+      telephone: hasOffice && city.office?.phone ? city.office.phone : "+919004002941",
       logo: {
         "@type": "ImageObject",
         url: `${baseUrl}/Navbar/logo.webp`,
@@ -316,7 +311,7 @@ export function generateDynamicJsonLd(courseSlug, citySlug) {
       },
       image: {
         "@type": "ImageObject",
-        url: `${baseUrl}/images/course-banner-${course.slug}-course.jpg`,
+        url: `${baseUrl}/images/course-banner-${courseSlug}-course.jpg`,
         "@id": `${pageUrl}#mainImage`,
         width: 1200,
         height: 630,
@@ -432,14 +427,8 @@ export function generateDynamicJsonLd(courseSlug, citySlug) {
       },
       aggregateRating: {
         "@type": "AggregateRating",
-        ratingValue: (hasOffice && city.office
-          ? city.office.rating
-          : course.defaultRating || 4.5
-        ).toString(),
-        reviewCount: (hasOffice && city.office
-          ? city.office.reviewCount
-          : course.defaultReviewCount || 50
-        ).toString(),
+        ratingValue: (hasOffice && city.office ? city.office.rating : course.defaultRating || 4.5).toString(),
+        reviewCount: (hasOffice && city.office ? city.office.reviewCount : course.defaultReviewCount || 50).toString(),
         bestRating: "5",
         worstRating: "1",
       },
@@ -470,12 +459,8 @@ export function generateDynamicJsonLd(courseSlug, citySlug) {
             duration: "PT3H",
             repeatFrequency: "Daily",
             repeatCount: 31,
-            startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-              .toISOString()
-              .split("T")[0],
-            endDate: new Date(Date.now() + 37 * 24 * 60 * 60 * 1000)
-              .toISOString()
-              .split("T")[0],
+            startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+            endDate: new Date(Date.now() + 37 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
           },
           instructor:
             hasOffice && city.office?.instructor
@@ -503,8 +488,10 @@ export function generateDynamicJsonLd(courseSlug, citySlug) {
       "@type": "VideoObject",
       "@id": `${pageUrl}#video`,
       name: `Introduction to ${courseTitle} Course at Connecting Dots ERP`,
-      description: `Explore ${courseTitle} with Connecting Dots ERP! Gain expertise in ${course.modules ? course.modules.slice(0, 2).join(" and ") : "your chosen field"}, data management, and business process integration. Master real-world applications to drive digital transformation.`,
-      thumbnailUrl: `${baseUrl}/images/video-thumbnail-${course.slug}-course-${citySlug}.jpg`,
+      description: `Explore ${courseTitle} with Connecting Dots ERP! Gain expertise in ${
+        course.modules ? course.modules.slice(0, 2).join(" and ") : "your chosen field"
+      }, data management, and business process integration. Master real-world applications to drive digital transformation.`,
+      thumbnailUrl: `${baseUrl}/images/video-thumbnail-${courseSlug}-course-${citySlug}.jpg`,
       embedUrl: "https://www.youtube.com/embed/7YRbfuv7R3k",
       uploadDate: currentDate.split("T")[0],
       publisher: {
@@ -518,11 +505,11 @@ export function generateDynamicJsonLd(courseSlug, citySlug) {
       "@type": "SpecialAnnouncement",
       "@id": `${pageUrl}#announcement`,
       name: `${courseTitle} Course in ${cityName} - New Batch Starting Soon!`,
-      text: `Join our new batch for the ${courseTitle} course in ${cityName}. Enroll now and kickstart your career in ${courseTitle}. The course offers in-depth training in ${course.modules ? course.modules.slice(0, 3).join(", ") : "key concepts"}, with hands-on experience and expert guidance.`,
+      text: `Join our new batch for the ${courseTitle} course in ${cityName}. Enroll now and kickstart your career in ${courseTitle}. The course offers in-depth training in ${
+        course.modules ? course.modules.slice(0, 3).join(", ") : "key concepts"
+      }, with hands-on experience and expert guidance.`,
       datePosted: currentDate.split("T")[0],
-      expires: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split("T")[0],
+      expires: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
       url: pageUrl,
       publisher: {
         "@id": `${baseUrl}/#organization`,
