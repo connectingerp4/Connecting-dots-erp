@@ -1,0 +1,455 @@
+/* Main Container */
+.containerYds {
+  width: 97.5%;
+  max-width: 1800px;
+  margin: 20px auto;
+  background-color: #ffffff;
+  padding: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.5s ease;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Animation Classes */
+.fadeIn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hidden {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Title */
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  background: rgb(1, 1, 98);
+  background: linear-gradient(
+    90deg,
+    rgba(1, 1, 98, 1) 35%,
+    rgb(3, 111, 133) 49%,
+    rgba(2, 2, 85, 1) 62%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 40px;
+  text-align: center;
+  line-height: 1.2; 
+  overflow: visible;
+}
+
+
+.titleAnimation {
+  animation: slideInFromTop 1s forwards;
+}
+
+/* Cards Container */
+.cardsContainerYds {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  align-items: stretch; /* Makes all cards stretch to match tallest */
+}
+
+/* Card */
+.cardClassYds {
+  background-color: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  width: calc(33.333% - 2rem);
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  opacity: 0;
+  transform: translateY(40px);
+  position: relative;
+  border-left: 4px solid rgba(3, 163, 196, 1);
+}
+
+.cardVisible {
+  animation: fadeUpIn 0.8s forwards;
+}
+
+.cardHidden {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.5rem 1.5rem 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.cardIcon {
+  font-size: 1.5rem;
+  color: rgba(3, 163, 196, 1);
+  background: rgba(3, 163, 196, 0.1);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.cardClassYds:hover .cardIcon {
+  transform: scale(1.1) rotate(10deg);
+}
+
+.cardContent {
+  padding: 1.5rem;
+  flex-grow: 1;
+  transition: max-height 0.4s ease;
+}
+
+/* Truncated content style */
+.truncatedContent {
+  max-height: 150px;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+}
+
+.cardFooter {
+  padding: 0 1.5rem 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.expandButton {
+  font-size: 0.875rem;
+  padding: 0.5rem 1.25rem;
+  background-color: rgba(1, 1, 98, 0.1);
+  color: rgba(1, 1, 98, 1);
+  border: none;
+  border-radius: 2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.expandButton:hover {
+  background-color: rgba(1, 1, 98, 0.2);
+}
+
+/* Read More Container */
+.readMoreContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1.5rem 1.5rem;
+}
+
+/* Read More Button */
+.readMoreButton {
+  background-color: transparent;
+  color: rgba(3, 163, 196, 1);
+  border: none;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.readMoreButton:hover {
+  background-color: rgba(3, 163, 196, 0.08);
+  text-decoration: underline;
+}
+
+.readMoreButton:focus {
+  outline: 2px solid rgba(3, 163, 196, 1);
+  outline-offset: 2px;
+}
+
+.readMoreButton:after {
+  content: "";
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  margin-left: 0.3rem;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  position: relative;
+  top: -1px;
+}
+
+.readMoreButton[aria-expanded="true"]:after {
+  transform: rotate(-135deg);
+  top: 1px;
+}
+
+.cardClassYds:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling card contents */
+.textPrimaryClass {
+  color: #113b6b;
+  font-size: 1.5rem;
+  margin-bottom: 0;
+  font-weight: 700;
+  transition: color 0.3s ease;
+  flex: 1;
+}
+
+.textMutedForegroundClass {
+  color: #4a5568;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
+}
+
+.listClass {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 1rem;
+}
+
+.listItem {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.listItem:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: rgba(3, 163, 196, 1);
+  font-size: 1.2rem;
+}
+
+/* Accent styles */
+.accent {
+  background: linear-gradient(
+    90deg,
+    rgba(1, 1, 98, 1) 20%,
+    rgba(3, 163, 196, 1) 50%,
+    rgba(2, 2, 85, 1) 80%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+  display: inline-block;
+}
+
+/* Loading, Error, and No Data States */
+.loadingContainer,
+.errorContainer,
+.noDataContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  margin: 2rem auto;
+  max-width: 500px;
+  border-radius: 1rem;
+  background-color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(3, 163, 196, 0.2);
+  border-top: 5px solid rgba(3, 163, 196, 1);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+.errorIcon,
+.infoIcon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.errorIcon {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.infoIcon {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+.retryButton {
+  margin-top: 1rem;
+  padding: 0.5rem 1.5rem;
+  background-color: #113b6b;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.retryButton:hover {
+  background-color: rgba(1, 1, 98, 0.8);
+}
+
+.noCards {
+  width: 100%;
+  text-align: center;
+  padding: 2rem;
+  color: #4a5568;
+  font-style: italic;
+}
+
+/* Animations */
+@keyframes fadeUpIn {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+  .cardClassYds {
+    width: calc(50% - 2rem);
+  }
+
+  .title {
+    font-size: 2.2rem;
+  }
+
+  .containerYds {
+    padding: 2.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .containerYds {
+    padding: 2rem;
+  }
+
+  .cardsContainerYds {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .cardClassYds {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .containerYds {
+    padding: 1.5rem;
+    margin: 2rem auto;
+  }
+
+  /* Mobile truncated content */
+  .truncatedContent {
+    max-height: 100px;
+  }
+
+  /* Mobile read more button */
+  .readMoreButton {
+    width: 100%;
+    justify-content: center;
+    padding: 8px 12px;
+    background-color: rgba(3, 163, 196, 0.08);
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+
+  .cardFooter {
+    display: none; /* Hide the old expand button container */
+  }
+}
+
+@media (max-width: 576px) {
+  .title {
+    font-size: 1.5rem;
+    letter-spacing: 0.03em;
+  }
+
+  .textPrimaryClass {
+    font-size: 1.25rem;
+  }
+
+  .containerYds {
+    width: 95%;
+    padding: 1.25rem;
+    margin: 1.5rem auto;
+  }
+
+  .cardHeader {
+    padding: 1.25rem 1.25rem 0.5rem;
+  }
+
+  .cardContent {
+    padding: 1.25rem;
+  }
+
+  /* Even smaller truncated content on small mobile */
+  .truncatedContent {
+    max-height: 80px;
+  }
+}

@@ -1,0 +1,218 @@
+/* Optimized OurBranches.module.css */
+:root {
+  --max-content-width: 1800px;
+  --primary-color: #3d0eaa;
+  --text-color: #182e4a;
+  --accent-gradient: linear-gradient(90deg, #a76b2e, #f18436);
+  --card-bg: #fff;
+  --card-border: 5px ridge #000;
+  --card-shadow: 0 10px 10px rgba(255, 255, 255, 0.1);
+  --card-hover-shadow: 0 10px 16px rgba(255, 255, 255, 0.2);
+  --title-gradient: linear-gradient(90deg, #fff 35%, #03a3c4 49%, #fff 62%);
+  --title-shadow: 0 0 0 #fff, 0 0 10px #fff, 0 0 10px #0073e6, 0 0 20px #182e4a;
+  --transition: all 0.3s ease;
+}
+
+/* Base Styles */
+.branchesSection {
+  text-align: center;
+  padding: 1.25rem;
+  max-width: var(--max-content-width);
+  width: 97.5%;
+  margin: 1.25rem auto;
+  contain: layout;
+}
+
+.branchesTitle {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: 0.25rem;
+  text-shadow: var(--title-shadow);
+  background: var(--title-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 0 auto;
+  will-change: transform;
+}
+
+.titleUnderline {
+  width: 5rem;
+  height: 0.25rem;
+  background: var(--accent-gradient);
+  margin: 0.9375rem auto 2rem;
+  border-radius: 0.125rem;
+  border: none;
+}
+
+/* Branches Grid */
+.branchesContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+  justify-content: center;
+  padding: 0 1rem;
+  contain: layout;
+}
+
+/* Branch Card */
+.branchCard {
+  --card-padding: 1.25rem;
+  
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border: var(--card-border);
+  border-radius: 1.25rem;
+  padding: var(--card-padding);
+  margin: 0.625rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+  will-change: transform, box-shadow;
+  contain: content;
+  overflow: hidden;
+}
+
+.branchCard:hover {
+  box-shadow: var(--card-hover-shadow);
+  transform: translateY(-4px);
+}
+
+.branchCard h3 {
+  color: var(--primary-color);
+  margin: 0 0 0.625rem;
+  font-family: "Lato", system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  text-shadow: 1px 1px var(--primary-color);
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+.branchCard a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 600;
+  font-family: "Lato", system-ui, -apple-system, sans-serif;
+  transition: color 0.2s ease;
+  font-size: 0.9375rem;
+}
+
+.branchCard a:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+/* Map Container */
+.mapContainer {
+  height: 200px;
+  border: 2px ridge #000;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 0.625rem;
+  contain: strict;
+}
+
+/* Address Box */
+.add2 {
+  border: 2px ridge #000;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 0 1px #212121;
+  padding: 0.625rem;
+  margin: 0.5rem 0;
+  text-align: left;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  contain: content;
+}
+
+/* Screen Reader Only */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+  .branchesContainer {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  
+  .branchCard {
+    margin: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .branchesSection {
+    padding: 1rem;
+  }
+  
+  .branchesTitle {
+    font-size: 2rem;
+  }
+  
+  .branchesContainer {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    padding: 0 0.5rem;
+  }
+  
+  .branchCard {
+    height: auto;
+    min-height: 380px;
+  }
+  
+  .mapContainer {
+    height: 250px;
+  }
+  
+  .add2 {
+    font-size: 0.9375rem;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .branchesSection {
+    padding: 0.75rem;
+    width: 100%;
+  }
+  
+  .branchesTitle {
+    font-size: 1.75rem;
+    letter-spacing: 0.15rem;
+  }
+  
+  .branchesContainer {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 0 0.5rem;
+  }
+  
+  .branchCard {
+    margin: 0.25rem 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .mapContainer {
+    height: 200px;
+  }
+  
+  .add2 {
+    min-height: 100px;
+  }
+}
