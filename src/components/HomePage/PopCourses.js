@@ -107,7 +107,7 @@ const initialCourses = [
     count: 8,
     icon: "/Icons/sap (3).avif",
     startDays: 2,
-    rating: 4.9,
+    rating: 4.8,
   },
   {
     id: "5",
@@ -116,7 +116,7 @@ const initialCourses = [
     count: 8,
     icon: "/Icons/business-intelligence.avif",
     startDays: 1,
-    rating: 4.9,
+    rating: 4.8,
   },
   {
     id: "6",
@@ -125,7 +125,7 @@ const initialCourses = [
     count: 12,
     icon: "/Icons/sap (3).avif",
     startDays: 4,
-    rating: 4.9,
+    rating: 4.8,
   },
   {
     id: "7",
@@ -134,7 +134,7 @@ const initialCourses = [
     count: 15,
     icon: "/Icons/HR PR2.avif",
     startDays: 3,
-    rating: 4.9,
+    rating: 4.8,
   },
   {
     id: "8",
@@ -143,7 +143,7 @@ const initialCourses = [
     count: 13,
     icon: "/Icons/sap.png",
     startDays: 2,
-    rating: 4.9,
+    rating: 4.8,
   },
   {
     id: "9",
@@ -152,7 +152,7 @@ const initialCourses = [
     count: 17,
     icon: "/Icons/cloud-data.avif",
     startDays: 5,
-    rating: 4.9,
+    rating: 5,
   },
   {
     id: "10",
@@ -161,7 +161,7 @@ const initialCourses = [
     count: 6,
     icon: "/Icons/sap.png",
     startDays: 2,
-    rating: 4.9,
+    rating: 5,
   },
   {
     id: "11",
@@ -170,7 +170,7 @@ const initialCourses = [
     count: 3,
     icon: "/Icons/cloud-data.avif",
     startDays: 6,
-    rating: 4.9,
+    rating: 4.7,
   },
   {
     id: "12",
@@ -179,7 +179,7 @@ const initialCourses = [
     count: 8,
     icon: "/Icons/MnDS.avif",
     startDays: 5,
-    rating: 4.9,
+    rating: 4.8,
   }
 ];
 
