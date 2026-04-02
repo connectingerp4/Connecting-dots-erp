@@ -56,8 +56,6 @@ const AnimatedStatsSection = () => {
       setDotPosition({ x: 0, y: 180 });
       setCurrentStat(-1);
       setShowAllCards(true);
-    } else {
-      setShowAllCards(false);
     }
   }, [disableAnimation]);
 
@@ -173,43 +171,22 @@ const AnimatedStatsSection = () => {
       const progress = elapsed / animationDuration;
 
       if (isMobile) {
-        if (isPaused) {
-          frameRef.current = requestAnimationFrame(animate);
-          return;
-        }
-
         const yProgress = progress * 100;
         setWaveProgress(yProgress);
         setDotPosition({ x: 0, y: yProgress });
         setCurrentStat(getDotProximityToCircle(yProgress));
 
         if (elapsed >= animationDuration - 16) {
-          setIsPaused(true);
           setShowAllCards(true);
-          setTimeout(() => {
-            setIsPaused(false);
-            setShowAllCards(false);
-            startTime = Date.now();
-          }, isMobile ? 15000 : 10000);
         }
       } else {
-        if (isPaused) {
-          frameRef.current = requestAnimationFrame(animate);
-          return;
-        }
         const wavePos = progress * 100;
         setWaveProgress(wavePos);
         setDotPosition(getPointOnCurve(wavePos));
         setCurrentStat(getDotProximityToCircle(wavePos));
 
         if (elapsed >= animationDuration - 16) {
-          setIsPaused(true);
           setShowAllCards(true);
-          setTimeout(() => {
-            setIsPaused(false);
-            setShowAllCards(false);
-            startTime = Date.now();
-          }, isMobile ? 15000 : 10000);
         }
       }
 
@@ -275,7 +252,7 @@ const AnimatedStatsSection = () => {
                 const IconComponent = stat.icon;
                 const point = getPointOnCurve(stat.position);
                 const isActive = currentStat === index;
-                const showCard = cardsAlwaysVisible || isActive;
+                const showCard = cardsAlwaysVisible || index <= currentStat;
                 const isTabletExpanded = expandedTablet[index];
 
                 const circleSize = isTablet ? 'w-20 h-20' : 'w-28 h-28';
@@ -407,7 +384,7 @@ const AnimatedStatsSection = () => {
                 {stats.map((stat, index) => {
                   const IconComponent = stat.icon;
                   const isActive = currentStat === index;
-                  const showCard = showAllCards || isActive;
+                  const showCard = showAllCards || index <= currentStat;
                   const isMobileExpanded = expandedMobile[index];
 
                   return (
@@ -512,9 +489,11 @@ function getPointOnCurve(progress) {
 
 function getDotProximityToCircle(dotProgress) {
   const positions = [0, 20, 40, 60, 80, 100];
-  for (let i = 0; i < positions.length; i++) {
-    if (Math.abs(dotProgress - positions[i]) <= 7) return i;
+
+  for (let i = positions.length - 1; i >= 0; i--) {
+    if (dotProgress >= positions[i]) return i;
   }
+
   return -1;
 }
 
