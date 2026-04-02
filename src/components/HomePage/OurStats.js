@@ -225,7 +225,7 @@ const AnimatedStatsSection = () => {
 
           {!isMobile && (
             <div
-              className="relative w-full max-w-7xl -mt-20 mx-auto px-10"
+              className="relative w-full max-w-7xl -mt-20"
               style={{ height: isTablet ? '460px' : '520px' }}
             >
               <div className="absolute inset-0" style={{ top: '60px', height: isTablet ? '200px' : '240px' }}>
@@ -256,15 +256,13 @@ const AnimatedStatsSection = () => {
                 const isTabletExpanded = expandedTablet[index];
 
                 const circleSize = isTablet ? 'w-20 h-20' : 'w-28 h-28';
-                const leftPercent = (point.x / 1500) * 100;
-                const shiftedLeft = Math.max(5, Math.min(95, leftPercent + 3));
 
                 return (
                   <div
                     key={stat.id}
                     className="absolute transform -translate-x-1/2 -translate-y-1/2"
                     style={{
-                      left: `${shiftedLeft}%`,
+                      left: `${(point.x / 1500) * 100}%`,
                       top: `${60 + (point.y / 300) * (isTablet ? 200 : 240)}px`,
                       zIndex: showCard ? 20 : 10,
                     }}
