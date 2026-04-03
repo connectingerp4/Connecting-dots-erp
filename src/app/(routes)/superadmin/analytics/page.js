@@ -793,7 +793,11 @@ const AnalyticsPage = () => {
 
 
                       )}
+<<<<<<< HEAD
                       
+=======
+                  
+>>>>>>> 7dfb4ec (Full frontend update: analytics graphs, location validation, fixes)
 
 
                     </div>
