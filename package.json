@@ -78,6 +78,7 @@
     "react-scroll": "^1.9.2",
     "react-toastify": "^11.0.5",
     "react-wavify": "^1.11.1",
+    "recharts": "^3.8.1",
     "rimraf": "^6.1.0",
     "swiper": "^11.2.5",
     "tailwind-merge": "^3.0.2",

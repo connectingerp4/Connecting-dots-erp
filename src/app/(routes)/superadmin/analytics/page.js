@@ -13,6 +13,7 @@ import {
   FaTimes, // For error message icon
 } from "react-icons/fa";
 import Sidebar from "@/components/superadmin/Sidebar";
+import LeadsTrendChart from "@/components/superadmin/LeadsTrendChart";
 import AccessControl from "@/components/superadmin/AccessControl"; // Import AccessControl
 import { fetchWithAuth } from "@/utils/auth";
 import FixedLogo from "@/components/superadmin/FixedLogo";
@@ -628,15 +629,7 @@ const AnalyticsPage = () => {
                         />
                       )}
 
-                      {/* Course Breakdown 
-                      {analytics.leads?.byCourse && (
-                        <BarChart
-                          data={analytics.leads.byCourse}
-                          title="Leads by Course"
-                          valueSuffix=" leads"
-                        />
-                      )}
-                      */}
+
                       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                         <h3 className="text-lg font-semibold text-gray-800 mb-4">
                           Leads by Course (Category View)
@@ -708,6 +701,21 @@ const AnalyticsPage = () => {
                         </div>
                       </div>
 
+                      {/* Graph A - Weekly */}
+                      {analytics?.leads?.all && (
+                        <LeadsTrendChart
+                          leads={analytics.leads.all}
+                          type="weekly"
+                        />
+                      )}
+
+                      {/* Graph B - Monthly + Yearly */}
+                      {analytics?.leads?.all && (
+                        <LeadsTrendChart
+                          leads={analytics.leads.all}
+                          type="monthly"
+                        />
+                      )}
 
                       {/* Location Breakdown
                       {analytics.leads?.byLocation && (
@@ -763,6 +771,7 @@ const AnalyticsPage = () => {
                             }
                           )}
 
+
                           {/* 👇 EMPTY STATE */}
                           {filteredLocations.length === 0 && (
                             <div className="text-gray-500 text-sm text-center py-4">
@@ -771,6 +780,8 @@ const AnalyticsPage = () => {
                           )}
                         </div>
                       </div>
+
+
 
                       {/* Admin Role Distribution */}
                       {analytics.admins?.byRole && (
@@ -782,6 +793,9 @@ const AnalyticsPage = () => {
 
 
                       )}
+                      
+
+
                     </div>
                     <LeadDensityMap data={analytics.leads.byLocation} />
 
