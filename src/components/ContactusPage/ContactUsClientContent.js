@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { FaPhone, FaWhatsapp, FaMapMarkerAlt } from "react-icons/fa";
 import { CityContext } from "@/context/CityContext";
 import Branches from "@/components/HomePage/Branches";
+import cities from "cities.json";
 
 const ContactUsClientContent = ({
   formData = {},
@@ -27,10 +28,67 @@ const ContactUsClientContent = ({
     course: formData.course || "",
     countryCode: "+91",
   });
+  // ===== LOCATION AUTOCOMPLETE STATES (COPIED FROM POPUP FORM) =====
+  const [location, setLocation] = useState("");
+  const [isLocationSelected, setIsLocationSelected] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+  const [activeSuggestion, setActiveSuggestion] = useState(-1);
+  const [locationSuggestions, setLocationSuggestions] = useState([]);
+  const [isLoadingCities, setIsLoadingCities] = useState(true);
+
+  const locationInputRef = useRef(null);
+  const suggestionsRef = useRef(null);
+
+  // import cities
+
 
   useEffect(() => {
     console.log("Current form data:", localFormData);
   }, [localFormData]);
+
+  useEffect(() => {
+    const loadLocationData = () => {
+      try {
+        setIsLoadingCities(true);
+
+        const indianCities = cities.filter(
+          (city) => city.country === "IN" || city.country === "India"
+        );
+
+        const allLocations = indianCities.map((city) =>
+          city.subcountry ? `${city.name}, ${city.subcountry}` : city.name
+        );
+
+        const uniqueLocations = [...new Set(allLocations)].sort();
+
+        setLocationSuggestions(uniqueLocations);
+      } catch (error) {
+        console.error("Error loading cities:", error);
+      } finally {
+        setIsLoadingCities(false);
+      }
+    };
+
+    loadLocationData();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        locationInputRef.current &&
+        !locationInputRef.current.contains(event.target)
+      ) {
+        // delay closing so click can register
+        setTimeout(() => {
+          setShowSuggestions(false);
+        }, 150);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const countryCodes = [
     { code: "+91", country: "India", minLength: 10, maxLength: 10 },
@@ -82,7 +140,7 @@ const ContactUsClientContent = ({
       "Full Stack Training", "JAVA", "MERN Stack",
       "UI/UX Design", "Python", "Salesforce", "Software Development"
     ]
-    
+
   };
 
   // Branches information
@@ -116,6 +174,38 @@ const ContactUsClientContent = ({
     },
   ];
 
+  const handleLocationChange = (e) => {
+    const value = e.target.value;
+    setLocation(value);
+
+    // ❌ user typed → reset selection
+    setIsLocationSelected(false);
+
+    if (value.length > 0) {
+      const filtered = locationSuggestions.filter((suggestion) =>
+        suggestion.toLowerCase().includes(value.toLowerCase())
+      );
+
+      // ✅ Add "Other" option
+      const finalSuggestions = [...filtered.slice(0, 9), "Other"];
+
+      setFilteredSuggestions(finalSuggestions);
+      setShowSuggestions(true);
+      setActiveSuggestion(-1);
+    } else {
+      setShowSuggestions(false);
+      setFilteredSuggestions([]);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setLocation(suggestion);
+    setShowSuggestions(false);
+    setFilteredSuggestions([]);
+    setActiveSuggestion(-1);
+    setIsLocationSelected(true);
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -146,8 +236,11 @@ const ContactUsClientContent = ({
     console.log("Form submission:", localFormData);
     console.log("Country code:", localFormData.countryCode);
 
-    if (!localFormData.name || !localFormData.email || !localFormData.contact) {
-      setSubmissionError("Please fill all required fields");
+    const isValidLocation =
+      locationSuggestions.includes(location) || location === "Other";
+
+    if (!isValidLocation || !isLocationSelected) {
+      setSubmissionError("Please select a valid location from dropdown");
       setIsSubmitting(false);
       return;
     }
@@ -197,6 +290,7 @@ const ContactUsClientContent = ({
         email: localFormData.email,
         coursename: localFormData.course,
         countryCode: countryCode,
+        location: location,
       };
 
       console.log("Submitting data:", submissionData);
@@ -402,6 +496,49 @@ const ContactUsClientContent = ({
                     className="w-full px-4 py-3 border border-gray-300 bg-white text-gray-900 rounded-lg focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200 placeholder-gray-500"
                     required
                   />
+                </div>
+
+                <div className="relative w-full">
+                  <input
+                    ref={locationInputRef}
+                    type="text"
+                    placeholder="Enter your location"
+                    value={location}
+                    onChange={handleLocationChange}
+                    onFocus={() => {
+                      if (filteredSuggestions.length > 0) {
+                        setShowSuggestions(true);
+                      }
+                    }}
+                    className={`w-full px-4 py-3 border ${!isLocationSelected && location
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } bg-white text-gray-900 rounded-lg focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200`}
+                  />
+                  {!isLocationSelected && location && (
+                    <p className="text-red-500 text-sm mt-1">
+                      Please select a location from suggestions
+                    </p>
+                  )}
+
+                  {/* DROPDOWN */}
+                  {showSuggestions && filteredSuggestions.length > 0 && (
+                    <div className="absolute z-50 bg-white border w-full mt-1 rounded-lg shadow-lg max-h-48 overflow-auto">
+                      {filteredSuggestions.slice(0, 10).map((item, index) => (
+                        <div
+                          key={index}
+                          onMouseDown={(e) => {
+                            e.preventDefault(); // prevents input blur
+                            handleSuggestionClick(item);
+                          }}
+                          className={`px-4 py-2 cursor-pointer hover:bg-blue-100 ${index === activeSuggestion ? "bg-blue-100" : ""
+                            }`}
+                        >
+                          📍 {item}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="w-full">
