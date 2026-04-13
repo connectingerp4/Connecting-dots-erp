@@ -123,7 +123,7 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
-
+          // 
         {/* Facebook Pixel - Offloaded to Web Worker */}
         <Script
           id="facebook-pixel"
