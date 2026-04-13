@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { useState, useMemo } from "react";
 import {
@@ -16,6 +16,13 @@ const LeadsTrendChart = ({ leads = [], type = "monthly" }) => {
 
     const generateChartData = (leads, mode) => {
         const now = new Date();
+
+console.log("=== CHART DEBUG ===");
+    console.log("mode:", mode);
+    console.log("leads count:", leads?.length);
+    console.log("leads sample:", leads?.[0]);
+    console.log("===================");
+     
 
         // ================= WEEKLY (FIXED) =================
         if (mode === "weekly") {
@@ -40,22 +47,19 @@ const LeadsTrendChart = ({ leads = [], type = "monthly" }) => {
 
                 leads.forEach((lead) => {
                     const d = new Date(lead.createdAt);
+                    if (isNaN(d)) return; // skip invalid dates
+
+                    const dStr = d.toISOString().split("T")[0];
+                    const currentStr = currentDay.toISOString().split("T")[0];
+                    const prevStr = prevDay.toISOString().split("T")[0];
 
                     // CURRENT WEEK MATCH
-                    if (
-                        d.getDate() === currentDay.getDate() &&
-                        d.getMonth() === currentDay.getMonth() &&
-                        d.getFullYear() === currentDay.getFullYear()
-                    ) {
+                    if (dStr === currentStr) {
                         current++;
                     }
 
                     // PREVIOUS WEEK MATCH
-                    if (
-                        d.getDate() === prevDay.getDate() &&
-                        d.getMonth() === prevDay.getMonth() &&
-                        d.getFullYear() === prevDay.getFullYear()
-                    ) {
+                    if (dStr === prevStr) {
                         previous++;
                     }
                 });
@@ -73,49 +77,50 @@ const LeadsTrendChart = ({ leads = [], type = "monthly" }) => {
         }
         // ================= MONTHLY (KEEP SAME) =================
         if (mode === "monthly") {
-            const months = [];
+            const dataMap = {};
 
-            // build rolling 12 months
             for (let i = 11; i >= 0; i--) {
                 const current = new Date(now.getFullYear(), now.getMonth() - i, 1);
                 const prev = new Date(current);
                 prev.setFullYear(current.getFullYear() - 1);
 
-                months.push({
-                    label: current.toLocaleString("default", { month: "short" }),
-                    currentDate: current,
-                    prevDate: prev,
+                const key = current.toLocaleString("default", { month: "short" });
+
+                dataMap[key] = {
                     current: 0,
                     previous: 0,
-                });
+                    currentDate: current,
+                    prevDate: prev,
+                    currentKey: current.toLocaleDateString("en-CA", { year: "numeric", month: "2-digit" }),
+                    prevKey: prev.toLocaleDateString("en-CA", { year: "numeric", month: "2-digit" }),
+                };
             }
 
             leads.forEach((lead) => {
                 const d = new Date(lead.createdAt);
+                if (isNaN(d)) return; // skip invalid dates
 
-                months.forEach((m) => {
-                    if (
-                        d.getMonth() === m.currentDate.getMonth() &&
-                        d.getFullYear() === m.currentDate.getFullYear()
-                    ) {
-                        m.current++;
+                const dStr = d.toISOString().split("T")[0];
+                const leadMonthKey = dStr.substring(0, 7); // YYYY-MM
+
+                Object.values(dataMap).forEach((item) => {
+                    if (leadMonthKey === item.currentKey) {
+                        item.current++;
                     }
 
-                    if (
-                        d.getMonth() === m.prevDate.getMonth() &&
-                        d.getFullYear() === m.prevDate.getFullYear()
-                    ) {
-                        m.previous++;
+                    if (leadMonthKey === item.prevKey) {
+                        item.previous++;
                     }
                 });
             });
 
-            return months.map((m) => ({
-                name: m.label,
-                current: m.current,
-                previous: m.previous,
+            return Object.keys(dataMap).map((key) => ({
+                name: key,
+                current: dataMap[key].current,
+                previous: dataMap[key].previous,
             }));
         }
+
         // ================= YEARLY =================
         if (mode === "yearly") {
             const currentYear = now.getFullYear();
@@ -127,7 +132,10 @@ const LeadsTrendChart = ({ leads = [], type = "monthly" }) => {
             }
 
             leads.forEach((lead) => {
-                const year = new Date(lead.createdAt).getFullYear();
+                const d = new Date(lead.createdAt);
+                if (isNaN(d)) return; // skip invalid dates
+
+                const year = d.getFullYear();
                 if (dataMap[year] !== undefined) {
                     dataMap[year]++;
                 }
@@ -141,9 +149,17 @@ const LeadsTrendChart = ({ leads = [], type = "monthly" }) => {
     };
 
     const chartData = useMemo(
-        () => generateChartData(leads, mode),
+        () => generateChartData(leads, mode) || [],
         [leads, mode]
     );
+
+    if (!chartData || chartData.length === 0) {
+        return (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center text-gray-500">
+                No chart data available
+            </div>
+        );
+    }
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -196,7 +212,7 @@ const LeadsTrendChart = ({ leads = [], type = "monthly" }) => {
 
             {/* CHART */}
             <div className="w-full h-64">
-                <ResponsiveContainer>
+                <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={chartData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
                         <XAxis dataKey="name" stroke="#888" />

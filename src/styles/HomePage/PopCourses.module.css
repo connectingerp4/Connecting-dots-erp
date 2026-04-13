@@ -683,7 +683,7 @@
 @media (max-width: 480px) {
   .courseCard {
     width: 100%;
-    max-width: 280px;
+    max-width: 100%;
   }
 
   .timerContainer {
@@ -716,5 +716,17 @@
 
   .selectedCourseLabel {
     margin-bottom: 5px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .coursesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: stretch;   /* ensures full width usage */
+  }
+
+  .courseCard {
+    width: 100%;              /* override fixed 250px */
+    max-width: 100%;
   }
 }

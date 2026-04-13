@@ -210,6 +210,15 @@ const AnalyticsPage = () => {
       }
 
       const data = await response.json();
+// TEMP DEBUG
+console.log("=== ANALYTICS DEBUG ===");
+console.log("Full data:", JSON.stringify(data, null, 2));
+console.log("leads.all:", data?.leads?.all);
+console.log("leads.all length:", data?.leads?.all?.length);
+console.log("leads.all sample:", data?.leads?.all?.[0]);
+console.log("======================");
+
+      
       setAnalytics(data);
 
       // Calculate conversion rates
@@ -702,20 +711,16 @@ const AnalyticsPage = () => {
                       </div>
 
                       {/* Graph A - Weekly */}
-                      {analytics?.leads?.all && (
-                        <LeadsTrendChart
-                          leads={analytics.leads.all}
-                          type="weekly"
-                        />
-                      )}
+                      <LeadsTrendChart
+                        leads={analytics?.leads?.all || []}
+                        type="weekly"
+                      />
 
                       {/* Graph B - Monthly + Yearly */}
-                      {analytics?.leads?.all && (
-                        <LeadsTrendChart
-                          leads={analytics.leads.all}
-                          type="monthly"
-                        />
-                      )}
+                      <LeadsTrendChart
+                        leads={analytics?.leads?.all || []}
+                        type="monthly"
+                      />
 
                       {/* Location Breakdown
                       {analytics.leads?.byLocation && (
