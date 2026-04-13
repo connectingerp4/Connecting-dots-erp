@@ -9,14 +9,12 @@ import {
   FaPhoneAlt,
   FaBan,
   FaUserCog,
-  FaSpinner, // For loading spinner
   FaTimes, // For error message icon
 } from "react-icons/fa";
 import Sidebar from "@/components/superadmin/Sidebar";
 import LeadsTrendChart from "@/components/superadmin/LeadsTrendChart";
 import AccessControl from "@/components/superadmin/AccessControl"; // Import AccessControl
 import { fetchWithAuth } from "@/utils/auth";
-import FixedLogo from "@/components/superadmin/FixedLogo";
 import dynamic from "next/dynamic";
 // Simple bar chart component refactored with Tailwind
 const BarChart = ({ data, title, valuePrefix = "", valueSuffix = "" }) => {
@@ -94,6 +92,7 @@ const AnalyticsPage = () => {
   const [conversionRates, setConversionRates] = useState(null);
   const [userRole, setUserRole] = useState(null); // State to store user role
   const [locationSearch, setLocationSearch] = useState("");
+  const [groupedCourses, setGroupedCourses] = useState([]);
 
   // Authentication check
   useEffect(() => {
@@ -147,6 +146,58 @@ const AnalyticsPage = () => {
     // Added dateRange and userRole as dependencies
   }, [dateRange, userRole]);
 
+  useEffect(() => {
+    if (!analytics?.leads?.byCourse) return;
+
+    const courseCategories = {
+      "SAP Functional": [
+        "SAP FICO", "SAP Ariba", "SAP MM", "SAP SD", "SAP HR/HCM",
+        "SAP PP", "SAP QM", "SAP PM", "SAP PS", "SAP EWM",
+        "SAP SCM", "SAP SUCCESSFACTOR"
+      ],
+      "SAP Technical": [
+        "SAP ABAP", "SAP S/4 HANA", "SAP BW/BI", "SAP BASIS"
+      ],
+      "Data Visualization": [
+        "Tableau", "Power BI", "SQL"
+      ],
+      "Digital Marketing": [
+        "Advance Digital Marketing", "Pay Per Click Training",
+        "Search Engine Optimization", "Social Media Marketing",
+        "Advance Google Analytics Training"
+      ],
+      "HR Courses": [
+        "HR Training", "Core HR", "HR Payroll",
+        "HR Management", "HR Generalist", "HR Analytics"
+      ],
+      "IT Courses": [
+        "MASTERS IN DATA ANALYTICS", "MASTERS IN DATA SCIENCE",
+        "MASTERS IN BUSINESS ANALYTICS", "CHAT GPT & AI",
+        "Full Stack Training", "JAVA", "MERN Stack",
+        "UI/UX Design", "Python", "Salesforce",
+        "Software Development"
+      ]
+    };
+
+    const result = Object.keys(courseCategories).map((category) => {
+      const courses = courseCategories[category];
+
+      const matched = analytics.leads.byCourse.filter((item) =>
+        courses.some((c) =>
+          item._id?.toLowerCase().includes(c.toLowerCase())
+        )
+      );
+
+      return {
+        category,
+        total: matched.reduce((sum, item) => sum + item.count, 0),
+        items: matched,
+      };
+    });
+
+    setGroupedCourses(result);
+  }, [analytics]);
+
   // Fetch analytics data (initial fetch without dates, or if useEffect dependency changes)
   const fetchAnalytics = async () => {
     // Use current dateRange from state if available, otherwise default to last 30 days
@@ -194,7 +245,8 @@ const AnalyticsPage = () => {
       }
 
       const response = await fetchWithAuth(
-        `${apiUrl}/api/analytics?${queryParams.toString()}` // Append query params
+        `${apiUrl}/api/analytics?${queryParams.toString()}`,
+        { cache: "no-store" }
       );
 
       if (!response.ok) {
@@ -210,15 +262,6 @@ const AnalyticsPage = () => {
       }
 
       const data = await response.json();
-// TEMP DEBUG
-console.log("=== ANALYTICS DEBUG ===");
-console.log("Full data:", JSON.stringify(data, null, 2));
-console.log("leads.all:", data?.leads?.all);
-console.log("leads.all length:", data?.leads?.all?.length);
-console.log("leads.all sample:", data?.leads?.all?.[0]);
-console.log("======================");
-
-      
       setAnalytics(data);
 
       // Calculate conversion rates
@@ -259,15 +302,6 @@ console.log("======================");
       [name]: value,
     });
     // Applying filters happens automatically via the useEffect hook on dateRange change
-  };
-
-  // Apply date filters - This button is now redundant as useEffect handles changes,
-  // but we'll keep it to trigger a fetch manually if needed or for clarity.
-  const applyDateFilter = () => {
-    // The fetch is triggered by the useEffect on dateRange change.
-    // We can optionally re-fetch here if needed, but it's often
-    // better to let useEffect manage it based on state.
-    fetchAnalyticsWithDateRange();
   };
 
   // If still loading initial data and user role is not yet determined/checked
@@ -386,55 +420,6 @@ console.log("======================");
 
                 {analytics && (
                   <>
-                    {console.log("🔥 FINAL analytics:", analytics)}
-                    {console.log("🔥 FINAL byCourse:", analytics?.leads?.byCourse)}
-
-                    {/* ===== ADD THIS BLOCK HERE ===== */}
-                    {(() => {
-                      const courseCategories = {
-                        "SAP Functional": [
-                          "SAP FICO", "SAP Ariba", "SAP MM", "SAP SD", "SAP HR/HCM", "SAP PP", "SAP QM", "SAP PM", "SAP PS", "SAP EWM", "SAP SCM", "SAP SUCCESSFACTOR"
-                        ],
-                        "SAP Technical": [
-                          "SAP ABAP", "SAP S/4 HANA", "SAP BW/BI", "SAP BASIS"
-                        ],
-                        "Data Visualization": [
-                          "Tableau", "Power BI", "SQL"
-                        ],
-                        "Digital Marketing": [
-                          "Advance Digital Marketing", "Pay Per Click Training", "Search Engine Optimization", "Social Media Marketing", "Advance Google Analytics Training"
-                        ],
-                        "HR Courses": [
-                          "HR Training", "Core HR", "HR Payroll", "HR Management", "HR Generalist", "HR Analytics"
-                        ],
-                        "IT Courses": [
-                          "MASTERS IN DATA ANALYTICS", "MASTERS IN DATA SCIENCE", "MASTERS IN BUSINESS ANALYTICS", "CHAT GPT & AI", "Full Stack Training", "JAVA", "MERN Stack", "UI/UX Design", "Python", "Salesforce", "Software Development"
-                        ]
-                      };
-
-                      const groupedCoursesLocal = Object.keys(courseCategories).map((category) => {
-                        const courses = courseCategories[category];
-
-                        const matched = analytics.leads.byCourse.filter((item) =>
-                          courses.some((c) =>
-                            item._id?.toLowerCase().includes(c.toLowerCase())
-                          )
-                        );
-
-                        const total = matched.reduce((sum, item) => sum + item.count, 0);
-
-                        return {
-                          category,
-                          total,
-                          items: matched,
-                        };
-                      });
-
-                      // expose variable to JSX
-                      window.groupedCourses = groupedCoursesLocal;
-
-                      return null;
-                    })()}
                     {/* Overview Stats */}
                     <div className="mb-8">
                       <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
@@ -671,7 +656,7 @@ console.log("======================");
                                     className="h-full bg-blue-500 rounded-full"
                                     style={{
                                       width: `${(cat.total /
-                                        Math.max(...groupedCourses.map((c) => c.total))) *
+                                        Math.max(...groupedCourses.map((c) => c.total), 1)) *
                                         100
                                         }%`,
                                     }}
@@ -694,7 +679,7 @@ console.log("======================");
                                             className="h-full bg-blue-400 rounded-full"
                                             style={{
                                               width: `${(item.count /
-                                                Math.max(...cat.items.map((i) => i.count))) *
+                                                Math.max(...cat.items.map((i) => i.count), 1)) *
                                                 100
                                                 }%`,
                                             }}
@@ -714,12 +699,16 @@ console.log("======================");
                       <LeadsTrendChart
                         leads={analytics?.leads?.all || []}
                         type="weekly"
+                        startDate={dateRange.startDate}
+                        endDate={dateRange.endDate}
                       />
 
                       {/* Graph B - Monthly + Yearly */}
                       <LeadsTrendChart
                         leads={analytics?.leads?.all || []}
                         type="monthly"
+                        startDate={dateRange.startDate}
+                        endDate={dateRange.endDate}
                       />
 
                       {/* Location Breakdown
