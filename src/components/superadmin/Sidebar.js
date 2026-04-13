@@ -57,7 +57,8 @@ const Sidebar = ({ activePage, userRole }) => {
       }
     };
   }, [isMobileMenuOpen]);
-
+  // trial line 
+  
   // Close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
